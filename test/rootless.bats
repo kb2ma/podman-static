@@ -31,7 +31,7 @@ teardown_file() {
 }
 
 @test "$TEST_PREFIX podman - unmapped uid" {
-	$DOCKER run --rm --privileged --user 9000:9000 \
+	$DOCKER run --rm --privileged --user 9000:9000 -e HOME=/tmp \
 		--pull=never "${PODMAN_IMAGE}" \
 		docker run --rm alpine:3.17 wget -O /dev/null http://example.org
 }
