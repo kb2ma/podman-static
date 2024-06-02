@@ -188,3 +188,21 @@ COPY --from=slirp4netns /slirp4netns/slirp4netns /usr/local/bin/slirp4netns
 COPY --from=cniplugins /usr/local/lib/cni /usr/local/lib/cni
 COPY --from=catatonit /catatonit/catatonit /usr/local/lib/podman/catatonit
 COPY conf/cni /etc/cni
+
+# Build podman image with rootful podman binaries with runc and CNI plugins.
+# Eventually may want to build directly from golang:1.20-alpine3.18 to eliminate
+# unnecessary packages from podmanbuildbase.
+FROM podmanbuildbase AS rootfulall
+LABEL maintainer="Ken Bannister <kb2ma@runbox.com>"
+RUN apk add --no-cache tzdata ca-certificates
+COPY --from=conmon /conmon/bin/conmon /usr/local/lib/podman/conmon
+COPY --from=podman /usr/local/bin/podman /usr/local/bin/podman
+COPY conf/containers /etc/containers
+
+# like rootlesspodmanbase
+ENV BUILDAH_ISOLATION=chroot container=oci
+# like rootlesspodmanrunc
+COPY --from=runc   /usr/local/bin/runc   /usr/local/bin/runc
+# like podmanall
+COPY --from=cniplugins /usr/local/lib/cni /usr/local/lib/cni
+COPY conf/cni /etc/cni
