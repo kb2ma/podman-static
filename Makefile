@@ -107,7 +107,8 @@ tar: .podman-from-container
 	#cp -r conf/cni $(ASSET_DIR)/etc/cni
 	cp README.md $(ASSET_DIR)/
 	# 2024-06-02 kb2ma Upstream uses the podman image to accomplish these actions.
-	#            Doesn't work for me.
+	#            Sticking with the historical cp-based copy mechanism.
+    #$(DOCKER) run --rm $(PODMAN_IMAGE) tar c /usr/local/{bin,lib} | tar -xC $(ASSET_DIR)
 	cp -r $(IMAGE_ROOTFS)/usr/local/lib $(ASSET_DIR)/usr/local/lib
 	cp -r $(IMAGE_ROOTFS)/usr/local/bin $(ASSET_DIR)/usr/local/bin
 
